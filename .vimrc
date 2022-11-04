@@ -16,6 +16,10 @@ inoremap jj <Esc>
 " Map ff to save file in normal mode.
 nnoremap ff :w<Enter>
 
+" Map :Wq to :wq.
+" See: https://stackoverflow.com/questions/12817501/remapping-wq-to-wq-in-vim
+command! Wq wq
+
 " Map Ctrl-hjkl to switch windows.
 " Note that on mac, Option (even when Terminal is configured to use Option as
 " 'Meta') seems to only send an <Esc> before the character. As a result,
@@ -83,6 +87,10 @@ syntax on
 " additional buffer and a vim copy will do the trick.
 set mouse=a
 
+" Fix issue where you can't click on the right side of wide terminals.
+" See: https://stackoverflow.com/questions/7000960/in-vim-why-doesnt-my-mouse-work-past-the-220th-column
+set ttymouse=sgr
+
 " let backspace move back past the start of edit, auto-indenting, start of line.
 set backspace=start,indent,eol
 
@@ -136,7 +144,7 @@ set wildmode=longest:list,full
 " parentheses/bracket highlighting behavior, and should therefore not be used.
 " matchadd() is a way to define unlimited matches, but although it seems to be
 " able to add matches (i.e. ':echo getmatches()' returns matches created with
-" matchadd(), it doesn't seem to highlight them?? As a result, you are using
+" matchadd(), it doesn't seem to highlight them?? As a result, this vimrc uses
 " regular match, and the single match pattern matches multiple things (trailing
 " whitespace and excess newlines).
 "
@@ -209,6 +217,10 @@ set smartindent
 " Per https://github.com/junegunn/fzf/blob/master/README-VIM.md:
 set rtp+=/usr/local/opt/fzf
 
+" fzf command is :FZF
+" ag command is :Ag
+
+
 " ------------------ Reference: Normal Mode Navigation -----------------------
 "
 " READ: Top answer ("your problem with vim is that you don't grok vi") to:
@@ -216,9 +228,9 @@ set rtp+=/usr/local/opt/fzf
 "
 " When you use vim, you are speaking a language. You are communicating to vim
 " what you want it to do at a higher level of abstraction than arrow key or
-" mouse clicks. If you grok this you will unlock the efficiency that vim can
-" offer. The goal is to edit text at the speed of thought -- as fast as you
-" can think, there it is.
+" mouse clicks. Fluency in this language will unlock the efficiency that vim
+" can offer. The goal is to edit text at the speed of thought -- as fast as
+" you can think, there it is.
 "
 " Jump up and down in the file based on relative line numbers.
 "<relative_number>j/k
@@ -265,6 +277,16 @@ set rtp+=/usr/local/opt/fzf
 
 " Navigating to a tag.
 ":tag <tag_name>
+
+" Navigate between multiple matches for the tag.
+" See: https://stackoverflow.com/questions/1054701/get-ctags-in-vim-to-go-to-definition-not-declaration
+":tn to go to the next tag match
+":tp to go to the previous match
+"g CTRL-] when cursor is on the word will take you to list of all matches.
+
+" Open tag in a new split by putting cursor on the word, then doing CTRL-w ]
+" NOTE: the default behavior for this is a horizontal split, but this vimrc
+" remapped this to a vertical split in the shortcuts section.
 
 
 " ------------------------------- Reference ----------------------------------
