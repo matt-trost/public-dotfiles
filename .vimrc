@@ -9,6 +9,19 @@ set nomodeline
 " Turn off error bells.
 "set noerrorbells
 
+" Make the default yank register the unnamedplus register, which is the system
+" clipboard. If you don't have this, you must manually specify the + register
+" before the yank, or use the <leader>c shortcut defined below in the
+" Shortcuts section.
+" See: https://stackoverflow.com/questions/30691466/what-is-difference-between-vims-clipboard-unnamed-and-unnamedplus-settings
+" NOTE: in order for this to work, your DISPLAY environment variable must be
+" properly set, and an X server must be running. Over ssh, you'll need to
+" enable X11 Forwarding. Would recommend MobaXTerm for this, since it comes
+" with an X servier built-in, and copy-paste seems to work out of the box
+" (even without this clipboard setting).
+set clipboard=unnamedplus
+
+
 " ------------------------------ Shortcuts -----------------------------------
 " Map jj to escape in insert mode.
 inoremap jj <Esc>
@@ -53,19 +66,45 @@ nnoremap <leader>s :source $MYVIMRC <Enter>
 " Read tags file, moving upwards towards root directory until one is found.
 nnoremap <leader>t :set tags=tags;/ <Enter>
 
+" Easy entry/exit of paste mode from normal mode.
+" Paste mode allows pasting text without vim adding unwanted indentations, etc.
+" https://dev.to/andy4thehuynh/create-a-shortcut-to-toggle-paste-mode-with-vim-5205
+function! TogglePaste()
+    if(&paste == 0)
+        set paste
+        echo "Paste Mode Enabled"
+    else
+        set nopaste
+        echo "Paste Mode Disabled"
+    endif
+endfunction
+
+" Set/unset paste mode
+nnoremap <leader>p :call TogglePaste() <Enter>
+
 " Copy selected text to system clipboard.
+" Note: this functionality requires the +clipboard feature of vim. You can run
+" `vim --version` to see whether clipboard is installed. See:
+" https://vi.stackexchange.com/questions/84/how-can-i-copy-text-to-the-system-clipboard-from-vim
+" for more information.
+vnoremap <leader>c "+y
 vnoremap <leader>c "+y
 
 " Mass comment // starting from the first column.
 vnoremap <leader>/ 0:norm i// <Enter>
 nnoremap <leader>/ 0:norm i// <Enter>
 
-" Mass uncomment // starting from the first column
+" Mass uncomment // starting from the first column.
 vnoremap <leader>? 0:norm xxx<Enter>
 nnoremap <leader>? 0:norm xxx<Enter>
 
+" Open git blame of current file in new vertical split.
+cmap gb vert :term git blame %
+nnoremap <leader>g :vert :term git blame %
+
+
 " -------------------------------- Colors ------------------------------------
-" Preferred colorscheme
+" Preferred colorscheme.
 color ron
 
 " Use this if on the Basic OSX terminal profile.
@@ -220,6 +259,10 @@ set rtp+=/usr/local/opt/fzf
 " fzf command is :FZF
 " ag command is :Ag
 
+" Map lowercase fzf and fz to the fzf command because it's easier to type.
+cmap fzf FZF
+cmap fz FZF
+
 
 " ------------------ Reference: Normal Mode Navigation -----------------------
 "
@@ -277,6 +320,7 @@ set rtp+=/usr/local/opt/fzf
 
 " Navigating to a tag.
 ":tag <tag_name>
+" Or, navigate to a tag by putting the cursor on the word, then CTRL-]
 
 " Navigate between multiple matches for the tag.
 " See: https://stackoverflow.com/questions/1054701/get-ctags-in-vim-to-go-to-definition-not-declaration
