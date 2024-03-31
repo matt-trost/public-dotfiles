@@ -16,10 +16,19 @@ set nomodeline
 " See: https://stackoverflow.com/questions/30691466/what-is-difference-between-vims-clipboard-unnamed-and-unnamedplus-settings
 " NOTE: in order for this to work, your DISPLAY environment variable must be
 " properly set, and an X server must be running. Over ssh, you'll need to
-" enable X11 Forwarding. Would recommend MobaXTerm for this, since it comes
+" enable X11 Forwarding. Would recommend MobaXterm for this, since it comes
 " with an X servier built-in, and copy-paste seems to work out of the box
 " (even without this clipboard setting).
-set clipboard=unnamedplus
+"set clipboard=unnamedplus
+
+" Don't fully understand what is going on, but it seems like without the
+" setting below, simply highlighting a line in visual mode is copying to the
+" system clipboard, which causes visual mode highlighting to be slow when
+" moving up and down lines...
+"
+" Instead, using the setting below, the copy to the system clipboard will only
+" occur when a visual highlight has been yanked.
+set clipboard=unnamed
 
 
 " ------------------------------ Shortcuts -----------------------------------
@@ -102,6 +111,11 @@ nnoremap <leader>? 0:norm xxx<Enter>
 cmap gb vert :term git blame %
 nnoremap <leader>g :vert :term git blame %
 
+" :Ag search the word under the cursor
+" https://github.com/ggreer/the_silver_searcher
+" https://stackoverflow.com/questions/29486909/vim-search-with-ag-the-word-under-cursor
+" https://github.com/junegunn/fzf.vim/issues/50#issuecomment-161676378
+nnoremap <silent> <Leader>ag :Ag <C-R><C-W><CR>
 
 " -------------------------------- Colors ------------------------------------
 " Preferred colorscheme.
@@ -250,11 +264,11 @@ set smartindent
 " and git clone fzf.vim into there:
 " https://github.com/junegunn/fzf.vim
 "
-" You may or may not need to add this line to vimrc:
-"set rtp+=~/.fzf
-
 " Per https://github.com/junegunn/fzf/blob/master/README-VIM.md:
+" Use this line if you installed fzf using Homebrew.
 set rtp+=/usr/local/opt/fzf
+" Use this line if you installed fzf using git.
+"set rtp+=~/.fzf
 
 " fzf command is :FZF
 " ag command is :Ag
