@@ -96,7 +96,7 @@ nnoremap <leader>p :call TogglePaste() <Enter>
 " `vim --version` to see whether clipboard is installed. See:
 " https://vi.stackexchange.com/questions/84/how-can-i-copy-text-to-the-system-clipboard-from-vim
 " for more information.
-vnoremap <leader>c "+y
+vnoremap <leader>y "+y
 vnoremap <leader>c "+y
 
 " Mass comment // starting from the first column.
@@ -116,6 +116,7 @@ nnoremap <leader>g :vert :term git blame %
 " https://stackoverflow.com/questions/29486909/vim-search-with-ag-the-word-under-cursor
 " https://github.com/junegunn/fzf.vim/issues/50#issuecomment-161676378
 nnoremap <silent> <Leader>ag :Ag <C-R><C-W><CR>
+
 
 " -------------------------------- Colors ------------------------------------
 " Preferred colorscheme.
@@ -144,12 +145,31 @@ set mouse=a
 " See: https://stackoverflow.com/questions/7000960/in-vim-why-doesnt-my-mouse-work-past-the-220th-column
 set ttymouse=sgr
 
-" let backspace move back past the start of edit, auto-indenting, start of line.
+" Let backspace move back past the start of edit, auto-indenting, start of line.
 set backspace=start,indent,eol
 
-"make it so there are at minimum 2 lines of context before the top or bottom
-"of the screen as you scroll.
+" Make it so there are at minimum 2 lines of context before the top or bottom
+" of the screen as you scroll.
 set scrolloff=2
+
+" Restore cursor location when opening a file, except for git commits.
+" This was taken from :help restore-cursor from the VIM 9.0 docs. The
+" keepjumps was added so the jump-to-cursor would not pollute the jumplist
+" (and therefore mess up expected CTRL-O / TAB navigation).
+augroup RestoreCursor
+  autocmd!
+  autocmd BufReadPost *
+    \ let line = line("'\"")
+    \ | if line >= 1 && line <= line("$") && &filetype !~# 'commit'
+    \      && index(['xxd', 'gitrebase'], &filetype) == -1
+    \ |   execute "keepjumps normal! g`\""
+    \ | endif
+augroup END
+" Version of the above for VIM 8.1:
+"autocmd BufReadPost *
+"  \ if line("'\"") = 1 && line("'\"") <= line("$") && &ft !~# 'commit'
+"  \ |   exe "keepjumps normal! g`\""
+"  \ | endif
 
 
 " ------------------------- Displaying Information----------------------------
